@@ -32,7 +32,7 @@ private:
     // returns operator precedence; the smaller the number the higher precedence
     // returns -1 if the operator is invalid
     // does not consider parenthesis
-    int operatorPrec(const std::string& op) const { // edited function to check if the operator string is greater than 1 (means its a negative number, return -1)
+    int operatorPrec(const std::string& op) const {
         if (op.length() != 1) return -1;
         
         switch (op[0]) {
@@ -86,18 +86,20 @@ private:
     }
 
     void tokenize(const std::string& s, MyVector<std::string>& tokens) {
+        std::string token;
+
         for (size_t i = 0; i < s.length(); ++i) {
-            if (isDigit(s[i]) || (s[i] == '-' && isDigit(s[i + 1]))) {
-                std::string token(1, s[i]);
+            if (isDigit(s[i]) || ((i == 0) || (!isDigit(s[i - 1]) && s[i - 1] != ')')) && s[i] == '-' && isDigit(s[i + 1])) {
+                std::string num_string(1, s[i]);
                 i++;
                 while (i < s.size() && (isDigit(s[i]) || s[i] == '.')) {
-                    token += s[i];
+                    num_string += s[i];
                     i++;
                 }
                 if (i < s.size() && !isDigit(s[i])) {
                     i--;
                 }
-                tokens.push_back(token);
+                tokens.push_back(num_string);
             }
             else {
                 tokens.push_back(std::string(1, s[i]));
